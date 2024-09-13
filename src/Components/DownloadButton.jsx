@@ -1,22 +1,30 @@
 import React from 'react';
 
-const DownloadButton = ({ tshirtColor, uploadedImage }) => {
+const DownloadButton = ({ bodyColor, leftSleeveColor, rightSleeveColor, uploadedImage }) => {
   const downloadDesign = () => {
     const canvas = document.createElement('canvas');
     canvas.width = 300;
     canvas.height = 400;
     const ctx = canvas.getContext('2d');
 
-    // Fill background with T-shirt color
-    ctx.fillStyle = tshirtColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Draw body
+    ctx.fillStyle = bodyColor;
+    ctx.fillRect(50, 100, 200, 300);
 
-    // Draw the uploaded image
+    // Draw left sleeve
+    ctx.fillStyle = leftSleeveColor;
+    ctx.fillRect(0, 100, 50, 100);
+
+    // Draw right sleeve
+    ctx.fillStyle = rightSleeveColor;
+    ctx.fillRect(250, 100, 50, 100);
+
+    // Draw uploaded image (if any)
     if (uploadedImage) {
       const img = new Image();
       img.src = uploadedImage;
       img.onload = () => {
-        ctx.drawImage(img, 50, 100, 200, 200);
+        ctx.drawImage(img, 75, 150, 150, 150);
         const link = document.createElement('a');
         link.download = 'customized-tshirt.png';
         link.href = canvas.toDataURL();
@@ -32,7 +40,7 @@ const DownloadButton = ({ tshirtColor, uploadedImage }) => {
 
   return (
     <button 
-      className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
+      className="bg-blue-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-blue-800 transition"
       onClick={downloadDesign}
     >
       Download T-shirt
