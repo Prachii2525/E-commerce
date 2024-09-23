@@ -11,62 +11,85 @@ const TshirtCustomizer = () => {
   const [uploadedImage, setUploadedImage] = useState(null);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8 text-center">T-shirt Customizer</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <h1 className="text-5xl font-bold mb-8 text-center text-gray-800">T-shirt Customizer</h1>
 
-      {/* T-shirt Shape */}
-      <div className="relative w-64 h-96 mb-8">
-        {/* T-shirt Body */}
-        <div 
-          className="absolute top-12 left-0 right-0 h-64 w-full bg-gray-200 rounded-lg shadow-lg" 
-          style={{ backgroundColor: bodyColor }}
+      {/* T-shirt Shape using SVG */}
+      <div className="relative w-64 h-96 mb-12 p-4 border rounded-lg shadow-lg bg-white">
+        <svg
+          width="250px"
+          height="300px"
+          viewBox="0 0 250 300"
+          xmlns="http://www.w3.org/2000/svg"
         >
+          {/* T-shirt Body */}
+          <path
+            d="M50,100 Q70,70 90,70 L160,70 Q180,70 200,100 L200,250 L50,250 Z"
+            fill={bodyColor}
+          />
+          {/* Neck Shape */}
+          <path
+            d="M90,70 Q100,40 150,70"
+            fill="#f5f5f5"
+          />
+          {/* Left Sleeve */}
+          <path
+            d="M0,120 Q10,100 50,100 L50,150 Q10,150 0,170 Z"
+            fill={leftSleeveColor}
+          />
+          {/* Right Sleeve */}
+          <path
+            d="M200,100 L250,120 L250,170 Q240,150 200,150 Z"
+            fill={rightSleeveColor}
+          />
+          {/* Display Uploaded Image */}
           {uploadedImage && (
-            <img
-              src={uploadedImage}
-              alt="Design"
-              className="max-w-full max-h-full object-cover mx-auto"
+            <image
+              href={uploadedImage}
+              x="55"
+              y="105"
+              height="140"
+              width="140"
+              preserveAspectRatio="none"
             />
           )}
-        </div>
-
-        {/* Left Sleeve */}
-        <div
-          className="absolute left-0 top-20 h-24 w-16 bg-gray-300 rounded-l-lg"
-          style={{ backgroundColor: leftSleeveColor }}
-        ></div>
-
-        {/* Right Sleeve */}
-        <div
-          className="absolute right-0 top-20 h-24 w-16 bg-gray-300 rounded-r-lg"
-          style={{ backgroundColor: rightSleeveColor }}
-        ></div>
+        </svg>
       </div>
 
-      {/* Color Pickers for Body and Sleeves */}
-      <div className="flex space-x-8">
-        <div>
-          <h2 className="text-center mb-2 text-lg font-medium">Body Color</h2>
-          <ColorPicker onColorChange={setBodyColor} />
+      {/* Controls Section */}
+      <div className="flex flex-col items-center w-full max-w-4xl space-y-8">
+        {/* Color Pickers for Body and Sleeves */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center p-4 bg-white rounded-lg shadow-md">
+            <h2 className="mb-2 text-xl font-semibold text-gray-700">Body Color</h2>
+            <ColorPicker onColorChange={setBodyColor} />
+          </div>
+          <div className="text-center p-4 bg-white rounded-lg shadow-md">
+            <h2 className="mb-2 text-xl font-semibold text-gray-700">Left Sleeve</h2>
+            <ColorPicker onColorChange={setLeftSleeveColor} />
+          </div>
+          <div className="text-center p-4 bg-white rounded-lg shadow-md">
+            <h2 className="mb-2 text-xl font-semibold text-gray-700">Right Sleeve</h2>
+            <ColorPicker onColorChange={setRightSleeveColor} />
+          </div>
         </div>
-        <div>
-          <h2 className="text-center mb-2 text-lg font-medium">Left Sleeve</h2>
-          <ColorPicker onColorChange={setLeftSleeveColor} />
-        </div>
-        <div>
-          <h2 className="text-center mb-2 text-lg font-medium">Right Sleeve</h2>
-          <ColorPicker onColorChange={setRightSleeveColor} />
-        </div>
-      </div>
 
-      {/* Image Uploader */}
-      <div className="mt-6">
-        <ImageUploader onImageUpload={setUploadedImage} />
-      </div>
+        {/* Image Uploader */}
+        <div className="w-full max-w-xl p-4 bg-white rounded-lg shadow-md">
+          <h2 className="mb-4 text-center text-xl font-semibold text-gray-700">Upload Design</h2>
+          <ImageUploader onImageUpload={setUploadedImage} />
+        </div>
 
-      {/* Download Button */}
-      <div className="mt-4">
-        <DownloadButton bodyColor={bodyColor} leftSleeveColor={leftSleeveColor} rightSleeveColor={rightSleeveColor} uploadedImage={uploadedImage} />
+        {/* Download Button */}
+        <div className="w-full max-w-sm">
+          <DownloadButton
+            bodyColor={bodyColor}
+            leftSleeveColor={leftSleeveColor}
+            rightSleeveColor={rightSleeveColor}
+            uploadedImage={uploadedImage}
+            className="w-full p-4 bg-blue-500 text-white font-bold rounded-lg shadow-lg hover:bg-blue-600 transition"
+          />
+        </div>
       </div>
     </div>
   );
