@@ -1,95 +1,113 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import ColorPicker from '../Components/ColorPicker';
 import ImageUploader from '../Components/ImageUploader';
-import DownloadButton from '../Components/DownloadButton';
+import { saveAs } from 'file-saver';
+import html2canvas from 'html2canvas';
 
 const TshirtCustomizer = () => {
-  // States for different parts of the T-shirt
   const [bodyColor, setBodyColor] = useState('#ffffff');
   const [leftSleeveColor, setLeftSleeveColor] = useState('#ffffff');
   const [rightSleeveColor, setRightSleeveColor] = useState('#ffffff');
   const [uploadedImage, setUploadedImage] = useState(null);
+  const tshirtRef = useRef(null); // Reference to the T-shirt SVG element
+
+  const downloadTshirt = async () => {
+    const canvas = await html2canvas(tshirtRef.current, {
+      backgroundColor: null, // Transparent background
+      useCORS: true, // Ensure cross-origin images load correctly
+    });
+    canvas.toBlob((blob) => {
+      saveAs(blob, 'custom-tshirt.png'); // Download as PNG file
+    });
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <h1 className="text-5xl font-bold mb-8 text-center text-gray-800">T-shirt Customizer</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <h1 className="text-4xl font-bold mb-8 text-center">T-shirt Customizer</h1>
 
       {/* T-shirt Shape using SVG */}
-      <div className="relative w-64 h-96 mb-12 p-4 border rounded-lg shadow-lg bg-white">
+      <div className="relative w-64 h-96 mb-8" ref={tshirtRef}>
         <svg
           width="250px"
           height="300px"
           viewBox="0 0 250 300"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* T-shirt Body */}
+          {/* T-shirt Body with Black Border */}
           <path
-            d="M50,100 Q70,70 90,70 L160,70 Q180,70 200,100 L200,250 L50,250 Z"
+            d="M75 100 L175 100 Q190 120 175 150 L175 250 L75 250 L75 150 Q60 120 75 100 Z"
             fill={bodyColor}
+            stroke="black"
+            strokeWidth="2"
           />
-          {/* Neck Shape */}
+          
+          {/* Rounded Neck Shape with Black Border */}
           <path
-            d="M90,70 Q100,40 150,70"
+            d="M105 100 Q125 80 145 100 T105 100 Z"
             fill="#f5f5f5"
+            stroke="black"
+            strokeWidth="2"
           />
-          {/* Left Sleeve */}
+
+          {/* Left Sleeve with Black Border */}
           <path
-            d="M0,120 Q10,100 50,100 L50,150 Q10,150 0,170 Z"
+            d="M75 100 L45 120 Q40 150 55 160 L75 150 Z"
             fill={leftSleeveColor}
+            stroke="black"
+            strokeWidth="2"
           />
-          {/* Right Sleeve */}
+
+          {/* Right Sleeve with Black Border */}
           <path
-            d="M200,100 L250,120 L250,170 Q240,150 200,150 Z"
+            d="M175 100 L205 120 Q210 150 195 160 L175 150 Z"
             fill={rightSleeveColor}
+            stroke="black"
+            strokeWidth="2"
           />
+
           {/* Display Uploaded Image */}
           {uploadedImage && (
             <image
               href={uploadedImage}
-              x="55"
-              y="105"
-              height="140"
-              width="140"
+              x="85"
+              y="130"
+              height="100"
+              width="80"
               preserveAspectRatio="none"
             />
           )}
         </svg>
       </div>
 
-      {/* Controls Section */}
-      <div className="flex flex-col items-center w-full max-w-4xl space-y-8">
-        {/* Color Pickers for Body and Sleeves */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center p-4 bg-white rounded-lg shadow-md">
-            <h2 className="mb-2 text-xl font-semibold text-gray-700">Body Color</h2>
-            <ColorPicker onColorChange={setBodyColor} />
-          </div>
-          <div className="text-center p-4 bg-white rounded-lg shadow-md">
-            <h2 className="mb-2 text-xl font-semibold text-gray-700">Left Sleeve</h2>
-            <ColorPicker onColorChange={setLeftSleeveColor} />
-          </div>
-          <div className="text-center p-4 bg-white rounded-lg shadow-md">
-            <h2 className="mb-2 text-xl font-semibold text-gray-700">Right Sleeve</h2>
-            <ColorPicker onColorChange={setRightSleeveColor} />
-          </div>
+      {/* Color Pickers for Body and Sleeves */}
+      <div className="flex space-x-8">
+        <div>
+          <h2 className="text-center mb-2 text-lg font-medium">Body Color</h2>
+          <ColorPicker onColorChange={setBodyColor} />
         </div>
+        <div>
+          <h2 className="text-center mb-2 text-lg font-medium">Left Sleeve</h2>
+          <ColorPicker onColorChange={setLeftSleeveColor} />
+        </div>
+        <div>
+          <h2 className="text-center mb-2 text-lg font-medium">Right Sleeve</h2>
+          <ColorPicker onColorChange={setRightSleeveColor} />
+        </div>
+      </div>
 
-        {/* Image Uploader */}
-        <div className="w-full max-w-xl p-4 bg-white rounded-lg shadow-md">
-          <h2 className="mb-4 text-center text-xl font-semibold text-gray-700">Upload Design</h2>
-          <ImageUploader onImageUpload={setUploadedImage} />
-        </div>
+      {/* Image Uploader */}
+      <div className="mt-6">
+        <ImageUploader onImageUpload={setUploadedImage} />
+      </div>
 
-        {/* Download Button */}
-        <div className="w-full max-w-sm">
-          <DownloadButton
-            bodyColor={bodyColor}
-            leftSleeveColor={leftSleeveColor}
-            rightSleeveColor={rightSleeveColor}
-            uploadedImage={uploadedImage}
-            className="w-full p-4 bg-blue-500 text-white font-bold rounded-lg shadow-lg hover:bg-blue-600 transition"
-          />
-        </div>
+      {/* Download Button */}
+      <div className="mt-4">
+        <button
+          onClick={downloadTshirt}
+          className="bg-blue-500 text-white py-2 px-4 rounded"
+        >
+          Download T-shirt
+        </button>
       </div>
     </div>
   );
